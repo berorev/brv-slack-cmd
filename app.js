@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 
 app.get('/*', (req, res) => {
+  console.log(`path: ${req.path}<br>\nquery: ${JSON.stringify(req.query)}`);
   res.send(`path: ${req.path}<br>\nquery: ${JSON.stringify(req.query, null, 2)}`);
 });
 
