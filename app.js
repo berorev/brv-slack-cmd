@@ -7,9 +7,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extends: true }));
 
 app.post('/*', (req, res) => {
-  res.send(`path: ${req.path}\n`);
-  res.send(`query: ${JSON.stringify(req.query, null, 2)}\n`);
-  res.send(`body: ${JSON.stringify(req.body, null, 2)}`);
+  const { path } = req;
+  const queryJson = JSON.stringify(req.query);
+  const bodyJson = JSON.stringify(req.body);
+  res.send(`path: ${path}\nquery: ${queryJson}\nbody: ${bodyJson}`);
 
   // error
   // res.contentType('application/json');
