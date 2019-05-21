@@ -6,6 +6,15 @@ const timingSafeCompare = require('tsscmp');
 const isVerified = (req) => {
   const signature = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
+  if (!signature) {
+    console.debug('req.header["x-slack-signature"] not exist');
+    return false;
+  }
+  if (!timestamp) {
+    console.debug('req.headers["x-slack-request-timestamp"] not exist');
+    return false;
+  }
+
   const hmac = crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET);
   const [version, hash] = signature.split('=');
 

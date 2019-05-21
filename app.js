@@ -2,6 +2,8 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const createError = require('http-errors');
+const handlers = require('./handlers');
 const slackUtils = require('./slack_utils');
 
 if (!process.env.SLACK_SIGNING_SECRET) {
@@ -25,19 +27,24 @@ const rawBodyBuffer = (req, res, buf, encoding) => {
 app.use(bodyParser.urlencoded({ verify: rawBodyBuffer, extended: true }));
 app.use(bodyParser.json({ verify: rawBodyBuffer }));
 
-app.post('/*', (req, res) => {
-  if (slackUtils.isVerified(req)) {
-    const { path } = req;
-    const queryJson = JSON.stringify(req.query);
-    const bodyJson = JSON.stringify(req.body);
-    res.send(`path: ${path}\nquery: ${queryJson}\nbody: ${bodyJson}`);
-  } else {
-    // error
-    res.status(401).json({
-      response_type: 'ephemeral',
-      text: 'Verification token mismatch'
-    });
+app.post('/slack/command/brvcmd', (req, res, next) => {
+  if (!slackUtils.isVerified(req)) {
+    return next(createError(401, 'Verification token failed'));
   }
+  const { text } = req.body; // command = "/brvcmd", text = <input>
+  const responseText = handlers.brvcmd(text);
+  res.send(responseText);
+  return next();
+});
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error('Error occurred');
+  console.error(err);
+  res.status(err.status || 500).json({
+    response_type: 'ephemeral',
+    text: err.message || 'Internal Server Error'
+  });
 });
 
 const port = process.env.PORT || 3000;
