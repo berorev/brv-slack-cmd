@@ -10,7 +10,7 @@ app.post('/*', (req, res) => {
   const { path } = req;
   const headerJson = JSON.stringify(req.headers);
   const bodyJson = JSON.stringify(req.body);
-  res.send(`path: ${path}\nheader: ${headerJson}, body: ${bodyJson}`);
+  res.send(`path: ${path}\n\nheader: ${headerJson}\n\nbody: ${bodyJson}`);
 });
 
 const port = process.env.PORT || 3000;
