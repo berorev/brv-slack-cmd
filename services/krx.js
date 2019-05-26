@@ -142,7 +142,7 @@ async function getStockInfo(code) {
   };
   return Promise.all([PriceService.getPrice(code), FinancialService.getFinancials(code)]).then(
     ([price, financials]) => {
-      let result = `${price.stockName} (${price.stockName})\n`;
+      let result = `${price.stockName} (${price.stockCode})\n`;
       result += `현재가: ${price.current}원 ${price.changes}\n`;
 
       const { periods } = financials.incomeStatement;
