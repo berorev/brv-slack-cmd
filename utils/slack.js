@@ -3,7 +3,7 @@
 const crypto = require('crypto');
 const timingSafeCompare = require('tsscmp');
 
-const isVerified = (req) => {
+const isValidRequest = (req) => {
   const signature = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
   if (!signature) {
@@ -28,4 +28,4 @@ const isVerified = (req) => {
   return timingSafeCompare(hmac.digest('hex'), hash);
 };
 
-module.exports = { isVerified };
+module.exports = { isValidRequest };

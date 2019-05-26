@@ -3,8 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
-const handlers = require('./handlers');
-const slackUtils = require('./slack_utils');
+const { endecodeService, krxService } = require('./services');
+const { slackUtils } = require('./utils');
 
 if (!process.env.SLACK_SIGNING_SECRET) {
   console.error('env.SLACK_SIGNING_SECRET not defined');
@@ -27,15 +27,38 @@ const rawBodyBuffer = (req, res, buf, encoding) => {
 app.use(bodyParser.urlencoded({ verify: rawBodyBuffer, extended: true }));
 app.use(bodyParser.json({ verify: rawBodyBuffer }));
 
-app.post('/slack/command/brvcmd', (req, res, next) => {
-  if (!slackUtils.isVerified(req)) {
-    return next(createError(401, 'Verification token failed'));
+app.post(
+  '/slack/command/brvcmd',
+  (req, res, next) => {
+    if (!slackUtils.isValidRequest(req)) {
+      return next(createError(401, 'Verification token failed'));
+    }
+
+    const { text } = req.body; // command = "/brvcmd", text = <input>
+    if (!text.includes(' ')) return next();
+
+    const { command, args } = text.split(' ', 2);
+    if (command === 'encode-b64-url') {
+      res.send(endecodeService.urlEncode(endecodeService.base64Encode(args)));
+      return next('route');
+    }
+    if (command === 'decode-url-b64') {
+      res.send(endecodeService.base64Decode(endecodeService.urlDecode(args)));
+      return next('route');
+    }
+    if (command === 'stock') {
+      res.send(krxService.getStockInfo(args));
+      return next('route');
+    }
+    return next();
+  },
+  (req, res) => {
+    const { path } = req;
+    const headerJson = JSON.stringify(req.headers);
+    const bodyJson = JSON.stringify(req.body);
+    res.send(`path: ${path}\n\nheader: ${headerJson}\n\nbody: ${bodyJson}`);
   }
-  const { text } = req.body; // command = "/brvcmd", text = <input>
-  const responseText = handlers.brvcmd(text);
-  res.send(responseText);
-  return next();
-});
+);
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
@@ -49,5 +72,5 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, '0.0.0.0', () => {
-  console.log(`brv-slack-bot listening on port ${port}.`);
+  console.log(`brv-slack-cmd listening on port ${port}.`);
 });
