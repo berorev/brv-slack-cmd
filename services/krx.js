@@ -131,12 +131,21 @@ class FinancialService {
 }
 
 async function getStockInfo(code) {
+  const formatter = (values, periods) => {
+    return values
+      .map((v, i) => {
+        return `${v} ('${periods[i].substr(4, 2)})`;
+      })
+      .join(', ');
+  };
   return Promise.all([PriceService.getPrice(code), FinancialService.getFinancials(code)]).then(
     ([price, financials]) => {
       let result = `현재가: ${price.current}원 ${price.changes}\n`;
-      result += `매출액: ${financials.incomeStatement.totalRevenues.join(' <- ')}`;
-      result += `영업이익: ${financials.incomeStatement.operatingIncomes.join(' <- ')}`;
-      result += `당기순이익: ${financials.incomeStatement.netIncome.join(' <- ')}`;
+
+      const { periods } = financials.incomeStatement;
+      result += `매출액: ${formatter(financials.incomeStatement.totalRevenues, periods)}`;
+      result += `영업이익: ${formatter(financials.incomeStatement.operatingIncomes, periods)}`;
+      result += `당기순이익: ${formatter(financials.incomeStatement.netIncome, periods)}`;
       return result;
     }
   );
