@@ -6,10 +6,10 @@ const createError = require('http-errors');
 const { endecodeService, krxService } = require('./services');
 const { slackUtils } = require('./utils');
 
-// if (!process.env.SLACK_SIGNING_SECRET) {
-//   console.error('env.SLACK_SIGNING_SECRET not defined');
-//   process.exit(1);
-// }
+if (!process.env.SLACK_SIGNING_SECRET) {
+  console.error('env.SLACK_SIGNING_SECRET not defined');
+  process.exit(1);
+}
 
 const app = express();
 
@@ -30,9 +30,9 @@ app.use(bodyParser.json({ verify: rawBodyBuffer }));
 app.post(
   '/slack/command/brvcmd',
   (req, res, next) => {
-    // if (!slackUtils.isValidRequest(req)) {
-    //   return next(createError(401, 'Verification token failed'));
-    // }
+    if (!slackUtils.isValidRequest(req)) {
+      return next(createError(401, 'Verification token failed'));
+    }
 
     const { text } = req.body; // command = "/brvcmd", text = <input>
     if (!text.includes(' ')) return next();
