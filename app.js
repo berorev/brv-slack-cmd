@@ -60,7 +60,7 @@ app.post(
       return next('route');
     }
     if (command === 'long2date') {
-      res.send(endecodeService.long2date(args));
+      res.send(endecodeService.long2date(Number(args)));
       return next('route');
     }
     if (command === 'stock') {
