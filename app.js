@@ -56,7 +56,7 @@ app.post(
       return next('route');
     }
     if (command === 'date2long') {
-      res.send(endecodeService.date2long(args));
+      res.send(String(endecodeService.date2long(args)));
       return next('route');
     }
     if (command === 'long2date') {
