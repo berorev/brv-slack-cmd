@@ -131,12 +131,31 @@ class FinancialService {
 }
 
 async function getStockInfo(code) {
-  const price = PriceService.getPrice(code);
-  const financials = FinancialService.getFinancials(code);
-  return {
-    price: await price,
-    financials: await financials
-  };
+  return Promise.all([PriceService.getPrice(code), FinancialService.getFinancials(code)]).then(
+    ([price, financials]) => {
+      let result = `현재가: ${price.current}원 ${price.changes}\n`;
+      result += `<table>`;
+      result += `<tr>`;
+      result += `<td>&nbsp;</td>`;
+      result += financials.incomeStatement.periods.map((s) => `<td>${s.substr(1)}</td>`);
+      result += `</tr>`;
+      result += `<tr>`;
+      result += `<td>매출</td>`;
+      result += financials.incomeStatement.totalRevenues.map((s) => `<td>${s}</td>`);
+      result += `</tr>`;
+      result += `<tr>`;
+      result += `<td>영업이익</td>`;
+      result += financials.incomeStatement.operatingIncomes.map((s) => `<td>${s}</td>`);
+      result += `</tr>`;
+      result += `<tr>`;
+      result += `<td>당기순이익</td>`;
+      result += financials.incomeStatement.netIncome.map((s) => `<td>${s}</td>`);
+      result += `</tr>`;
+      result += `</table>`;
+      console.log(result);
+      return result;
+    }
+  );
 }
 
 module.exports = {
