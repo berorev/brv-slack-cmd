@@ -55,6 +55,14 @@ app.post(
       res.send(endecodeService.urlDecode(args));
       return next('route');
     }
+    if (command === 'date2long') {
+      res.send(endecodeService.date2long(args));
+      return next('route');
+    }
+    if (command === 'long2date') {
+      res.send(endecodeService.long2date(args));
+      return next('route');
+    }
     if (command === 'stock') {
       krxService
         .getStockInfo(args)
