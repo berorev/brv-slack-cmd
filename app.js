@@ -37,13 +37,22 @@ app.post(
     const { text } = req.body; // command = "/brvcmd", text = <input>
     if (!text.includes(' ')) return next();
 
-    const { command, args } = text.split(' ', 2);
-    if (command === 'encode-b64-url') {
-      res.send(endecodeService.urlEncode(endecodeService.base64Encode(args)));
+    const [command, args] = text.split(' ', 2);
+    console.log(`command: ${command}, args: ${args}`);
+    if (command === 'encode-b64') {
+      res.send(endecodeService.base64Encode(args));
       return next('route');
     }
-    if (command === 'decode-url-b64') {
-      res.send(endecodeService.base64Decode(endecodeService.urlDecode(args)));
+    if (command === 'decode-b64') {
+      res.send(endecodeService.base64Decode(args));
+      return next('route');
+    }
+    if (command === 'encode-url') {
+      res.send(endecodeService.urlEncode(args));
+      return next('route');
+    }
+    if (command === 'decode-url') {
+      res.send(endecodeService.urlDecode(args));
       return next('route');
     }
     if (command === 'stock') {
