@@ -134,11 +134,9 @@ async function getStockInfo(code) {
   return Promise.all([PriceService.getPrice(code), FinancialService.getFinancials(code)]).then(
     ([price, financials]) => {
       let result = `현재가: ${price.current}원 ${price.changes}\n`;
-      result += `|&nbsp;|${financials.incomeStatement.periods.join('|')}|`;
-      result += `|---|${Array(financials.incomeStatement.periods.length).fill('---')}|`;
-      result += `|매출액|${financials.incomeStatement.totalRevenues.join('|')}|`;
-      result += `|영업이익|${financials.incomeStatement.operatingIncomes.join('|')}|`;
-      result += `|당기순이익|${financials.incomeStatement.netIncome.join('|')}|`;
+      result += `매출액: ${financials.incomeStatement.totalRevenues.join(' <- ')}`;
+      result += `영업이익: ${financials.incomeStatement.operatingIncomes.join(' <- ')}`;
+      result += `당기순이익: ${financials.incomeStatement.netIncome.join(' <- ')}`;
       return result;
     }
   );
