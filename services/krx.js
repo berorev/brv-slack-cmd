@@ -32,6 +32,8 @@ class PriceService {
       .then((xml) => {
         const stockInfo = xml.stockprice.TBL_StockInfo[0].$;
         return {
+          stockCode: code,
+          stockName: stockInfo.JongName, // 종목명: 파수닷컴
           current: stockInfo.CurJuka, // 현재가: 4,480
           changes: PriceService.formatChanges(stockInfo), // 전일대비: -110 -2.40%
           previousClose: stockInfo.PrevJuka, // 전일: 4,590
@@ -134,17 +136,18 @@ async function getStockInfo(code) {
   const formatter = (values, periods) => {
     return values
       .map((v, i) => {
-        return `${v} ('${periods[i].substr(4, 2)})`;
+        return `${v} ('${periods[i].substr(3, 2)})`;
       })
       .join(', ');
   };
   return Promise.all([PriceService.getPrice(code), FinancialService.getFinancials(code)]).then(
     ([price, financials]) => {
-      let result = `현재가: ${price.current}원 ${price.changes}\n`;
+      let result = `${price.stockName} (${price.stockName})\n`;
+      result += `현재가: ${price.current}원 ${price.changes}\n`;
 
       const { periods } = financials.incomeStatement;
-      result += `매출액: ${formatter(financials.incomeStatement.totalRevenues, periods)}`;
-      result += `영업이익: ${formatter(financials.incomeStatement.operatingIncomes, periods)}`;
+      result += `매출액: ${formatter(financials.incomeStatement.totalRevenues, periods)}\n`;
+      result += `영업이익: ${formatter(financials.incomeStatement.operatingIncomes, periods)}\n`;
       result += `당기순이익: ${formatter(financials.incomeStatement.netIncome, periods)}`;
       return result;
     }
