@@ -134,25 +134,11 @@ async function getStockInfo(code) {
   return Promise.all([PriceService.getPrice(code), FinancialService.getFinancials(code)]).then(
     ([price, financials]) => {
       let result = `현재가: ${price.current}원 ${price.changes}\n`;
-      result += `<table>`;
-      result += `<tr>`;
-      result += `<td>&nbsp;</td>`;
-      result += financials.incomeStatement.periods.map((s) => `<td>${s.substr(1)}</td>`);
-      result += `</tr>`;
-      result += `<tr>`;
-      result += `<td>매출</td>`;
-      result += financials.incomeStatement.totalRevenues.map((s) => `<td>${s}</td>`);
-      result += `</tr>`;
-      result += `<tr>`;
-      result += `<td>영업이익</td>`;
-      result += financials.incomeStatement.operatingIncomes.map((s) => `<td>${s}</td>`);
-      result += `</tr>`;
-      result += `<tr>`;
-      result += `<td>당기순이익</td>`;
-      result += financials.incomeStatement.netIncome.map((s) => `<td>${s}</td>`);
-      result += `</tr>`;
-      result += `</table>`;
-      console.log(result);
+      result += `|&nbsp;|${financials.incomeStatement.periods.join('|')}|`;
+      result += `|---|${Array(financials.incomeStatement.periods.length).fill('---')}|`;
+      result += `|매출액|${financials.incomeStatement.totalRevenues.join('|')}|`;
+      result += `|영업이익|${financials.incomeStatement.operatingIncomes.join('|')}|`;
+      result += `|당기순이익|${financials.incomeStatement.netIncome.join('|')}|`;
       return result;
     }
   );
