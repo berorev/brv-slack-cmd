@@ -1,5 +1,6 @@
 const express = require('express');
 const createError = require('http-errors');
+const { SlackUtils } = require('../../utils');
 const brvcmdCommander = require('./brvcmd.commander');
 
 const commanderMap = new Map([[brvcmdCommander.name, brvcmdCommander]]);
@@ -10,9 +11,9 @@ router.post(
   '/command/:command', // ex) /command/brvcmd
   (req, res, next) => {
     // verification
-    // if (!SlackUtils.isValidRequest(req)) {
-    //   return next(createError(401, 'Verification token failed'));
-    // }
+    if (!SlackUtils.isValidRequest(req)) {
+      return next(createError(401, 'Verification token failed'));
+    }
     return next();
   },
   (req, res, next) => {

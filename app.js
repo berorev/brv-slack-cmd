@@ -4,10 +4,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const router = require('./routes');
 
-// if (!process.env.SLACK_SIGNING_SECRET) {
-//   console.error('env.SLACK_SIGNING_SECRET not defined');
-//   process.exit(1);
-// }
+if (!process.env.SLACK_SIGNING_SECRET) {
+  console.error('env.SLACK_SIGNING_SECRET not defined');
+  process.exit(1);
+}
 
 const app = express();
 
