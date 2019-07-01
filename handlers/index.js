@@ -1,3 +1,3 @@
-const brvcmd = require('./brvcmd');
+const brvcmdHandler = require('./brvcmd');
 
-module.exports = { brvcmd };
+module.exports = { brvcmdHandler };

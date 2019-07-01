@@ -1,3 +1,3 @@
-const slackUtils = require('./slack');
+const SlackUtils = require('./slack');
 
-module.exports = { slackUtils };
+module.exports = { SlackUtils };

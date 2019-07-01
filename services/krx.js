@@ -132,7 +132,7 @@ class FinancialService {
   }
 }
 
-async function getStockInfo(code) {
+async function getStockSummary(code) {
   const formatter = (values, periods) => {
     return values
       .map((v, i) => {
@@ -155,7 +155,7 @@ async function getStockInfo(code) {
 }
 
 module.exports = {
-  getStockInfo,
+  getStockSummary,
   getPrice: PriceService.getPrice,
   getFinancials: FinancialService.getFinancials
 };
