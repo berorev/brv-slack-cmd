@@ -37,7 +37,7 @@ router.post(
     req.attrs = Object.assign(req.attrs || {}, { commander, handlerName, args, userId });
     return next();
   },
-  (req, res) => {
+  (req, res, next) => {
     const { commander, handlerName, args, userId } = req.attrs;
     // dump command
     if (handlerName === 'dump') {
@@ -49,7 +49,7 @@ router.post(
       commander
         .run(handlerName, args, userId)
         .then((s) => res.send(s))
-        .catch((e) => createError(500, e));
+        .catch((e) => next(createError(500, e)));
     }
   }
 );
