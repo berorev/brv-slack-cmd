@@ -33,7 +33,9 @@ router.post(
       return next(createError(401, 'Verification token failed'));
     }
 
-    const [handlerName, args] = text.includes(' ') ? text.split(' ', 2) : [text, ''];
+    const [handlerName, args] = text.includes(' ')
+      ? [text.substring(0, text.indexOf(' ')), text.substring(text.indexOf(' ') + 1)]
+      : [text, ''];
     req.attrs = Object.assign(req.attrs || {}, { commander, handlerName, args, userId });
     return next();
   },
