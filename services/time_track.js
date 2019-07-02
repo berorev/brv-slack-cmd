@@ -104,7 +104,7 @@ function summary(userId) {
   const tracker = timeTrackerStorage.get(userId);
   return `
 * Tasks:
-  ${tracker.tasks.map((t, i) => `  ${i}. ${t.summary()}`).join('\n')}
+  ${tracker.tasks.map((t, i) => `  ${i}. ${t.summary}`).join('\n')}
 * CurrentTask:
   * ${tracker.currentTask ? `${tracker.currentTask.summary}` : 'none'}
   `.trim();
