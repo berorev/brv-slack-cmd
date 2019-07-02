@@ -27,7 +27,7 @@ class Task {
   }
 
   get summary() {
-    return `${this.text} (${this.startTimeStr()} ~ ${this.endTimeStr()} / ${this.elapsedHours()})`;
+    return `${this.text} (${this.startTimeStr} ~ ${this.endTimeStr} / ${this.elapsedHours})`;
   }
 
   static formatTime(m) {
