@@ -106,7 +106,7 @@ function summary(userId) {
 * Tasks:
   ${tracker.tasks.map((t, i) => `  ${i}. ${t.summary()}`).join('\n')}
 * CurrentTask:
-  * ${tracker.currentTask ? `${tracker.currentTask.summary()}` : 'none'}
+  * ${tracker.currentTask ? `${tracker.currentTask.summary}` : 'none'}
   `.trim();
 }
 
