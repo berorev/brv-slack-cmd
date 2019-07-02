@@ -4,10 +4,10 @@ class Commander {
     this.handlers = new Map();
   }
 
-  async run(handlerName, args) {
+  async run(handlerName, args, userId) {
     const fn = this.handlers.get(handlerName);
     if (fn) {
-      return fn(args);
+      return fn(args, userId);
     }
     throw new Error(`Undefined handler ${handlerName} at command ${this.name}`);
   }

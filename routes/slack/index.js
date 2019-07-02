@@ -18,7 +18,7 @@ router.post(
   },
   (req, res, next) => {
     // request parsing and validation
-    const { command, text } = req.body; // command = "/brvcmd", text = <input>
+    const { command, text, user_id: userId } = req.body; // command = "/brvcmd", text = <input>, user_id = "U2147483697"
     const commanderName = req.params.command;
     if (command !== `/${commanderName}`) {
       return next(
@@ -29,15 +29,12 @@ router.post(
     if (!commander) {
       return next(createError(400, `Undefined command : ${commanderName}`));
     }
-    if (!text.includes(' ')) {
-      return next(createError(400, 'Invalid format of input text'));
-    }
-    const [handlerName, args] = text.split(' ', 2);
-    req.attrs = Object.assign(req.attrs || {}, { commander, handlerName, args });
+    const [handlerName, args] = text.includes(' ') ? text.split(' ', 2) : [text, ''];
+    req.attrs = Object.assign(req.attrs || {}, { commander, handlerName, args, userId });
     return next();
   },
   (req, res) => {
-    const { commander, handlerName, args } = req.attrs;
+    const { commander, handlerName, args, userId } = req.attrs;
     // dump command
     if (handlerName === 'dump') {
       const { path } = req;
@@ -46,7 +43,7 @@ router.post(
       res.send(`path: ${path}\n\nheader: ${headerJson}\n\nbody: ${bodyJson}`);
     } else {
       commander
-        .run(handlerName, args)
+        .run(handlerName, args, userId)
         .then((s) => res.send(s))
         .catch((e) => createError(500, e));
     }
