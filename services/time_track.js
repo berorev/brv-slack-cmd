@@ -47,21 +47,24 @@ class TimeTracker {
 
     const task = new Task(text);
     this.currentTask = task;
+    return task;
   }
 
   stop() {
     if (!this.currentTask) {
-      return false;
+      return null;
     }
-    this.currentTask.end();
-    this.tasks.push(this.currentTask);
+    const task = this.currentTask;
     this.currentTask = null;
-    return true;
+    task.end();
+    this.tasks.push(task);
+    return task;
   }
 
   reset() {
     this.tasks = [];
     this.currentTask = null;
+    return true;
   }
 }
 
@@ -84,12 +87,17 @@ const timeTrackerStorage = new TimeTrackerStorage();
 
 function start(userId, text) {
   const tracker = timeTrackerStorage.get(userId);
-  tracker.start(text);
+  return tracker.start(text);
 }
 
 function stop(userId) {
   const tracker = timeTrackerStorage.get(userId);
-  tracker.stop();
+  return tracker.stop();
+}
+
+function reset(userId) {
+  const tracker = timeTrackerStorage.get(userId);
+  return tracker.reset();
 }
 
 function summary(userId) {
@@ -102,4 +110,4 @@ function summary(userId) {
   `.trim();
 }
 
-module.exports = { start, stop, summary };
+module.exports = { start, stop, reset, summary };
